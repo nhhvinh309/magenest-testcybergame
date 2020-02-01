@@ -1,0 +1,94 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+/** @var $block \Magento\Catalog\Block\Product\View */
+
+$data = $block->getProduct()->getData();
+?>
+<?php $_product = $block->getProduct(); ?>
+<?php $buttonTitle = __('Add to Cart'); ?>
+<?php if ($_product->isSaleable()) : ?>
+    <div class="box-tocart">
+        <div class="fieldset">
+            <?php if ($block->shouldRenderQuantity()) : ?>
+                <div class="field qty">
+                    <label class="label" for="qty"><span><?= $block->escapeHtml(__('Qty')) ?></span></label>
+                    <div class="control">
+                        <input type="number"
+                               name="qty"
+                               id="qty"
+                               min="0"
+                               value="<?= $block->getProductDefaultQty() * 1 ?>"
+                               title="<?= $block->escapeHtmlAttr(__('Qty')) ?>"
+                               class="input-text qty"
+                               data-validate="<?= $block->escapeHtml(json_encode($block->getQuantityValidators())) ?>"
+                        />
+                    </div>
+                </div>
+            <?php endif; ?>
+            <?php if (isset($data["number_pc"]) || isset($data["address"]) || isset($data["food_price"]) || isset($data["drink_price"])  ) : ?>
+                <div>
+                    <p> Number PC: <?= $data["number_pc"]; ?></p>
+                    <p> Address: <?= $data["address"] ?></p>
+                    <p> Food Price: <?= $data["food_price"]; ?></p>
+                    <p> Drink Price: <?= $data["drink_price"]; ?></p>
+                    <label class="label"
+                           for="account_name"><span><?= $block->escapeHtml(__('Account Name')) ?></span></label>
+                    <div class="control">
+                        <input type="text"
+                               name="account_name"
+                               id = "account_name"
+                               title="<?= $block->escapeHtmlAttr(__('Account Name11111 ')) ?>"
+                        />
+                        <p></p>
+                    </div>
+
+                    <p id="final_price">Final Price</p>
+                </div>
+            <?php endif; ?>
+            <div class="actions">
+                <button type="submit"
+                        title="<?= $block->escapeHtmlAttr($buttonTitle) ?>"
+                        class="action primary tocart"
+                        id="product-addtocart-button" disabled>
+                    <span><?= $block->escapeHtml($buttonTitle) ?></span>
+                </button>
+                <?= $block->getChildHtml('', true) ?>
+            </div>
+            <div class="actions">
+                <button type="submit"
+                        title="<?= $block->escapeHtmlAttr($buttonTitle) ?>"
+                        class="action primary tocart"
+                        id="product-addtocart-button" disabled>
+                    <span><?= $block->escapeHtml($buttonTitle) ?></span>
+                </button>
+                <?= $block->getChildHtml('', true) ?>
+            </div>
+
+        </div>
+    </div>
+<?php endif; ?>
+<script type="text/x-magento-init">
+    {
+        "#product_addtocart_form": {
+            "Magento_Catalog/js/validate-product": {}
+        }
+    }
+
+</script>
+<script>
+    require(['jquery'], function () {
+        jQuery(document).ready(function () {
+
+            jQuery("#qty").keyup(function(){
+                let qty = jQuery("#qty").val();
+                let price  = <?= $data["price"] ?>;
+                let final_price = price * qty;
+                jQuery("#final_price").text(final_price);
+            });
+        });
+    });
+</script>
